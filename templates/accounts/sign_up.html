@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign up | Aka Coffee{% endblock %}
+{% block body_class %}page-auth{% endblock %}
+
+{% block body %}
+    <div class="brand">
+        <img src="{% static 'img/aka.png' %}" alt="Aka Coffee logo">
+        <span>Aka Coffee</span>
+    </div>
+
+    <main class="card">
+        <h1>Create your account</h1>
+
+        <form id="signupForm" method="post" action="{% url 'sign_up' %}" novalidate>
+            {% csrf_token %}
+            <div class="names">
+                <div>
+                    <label class="field-label" for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="first_name" value="{{ form.first_name.value|default_if_none:'' }}" placeholder="Enter your first name" autocomplete="given-name" required>
+                </div>
+                <div>
+                    <label class="field-label" for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="last_name" value="{{ form.last_name.value|default_if_none:'' }}" placeholder="Enter your last name" autocomplete="family-name" required>
+                </div>
+            </div>
+
+            <label class="field-label" for="email">Email Address</label>
+            <input type="email" id="email" name="email" value="{{ form.email.value|default_if_none:'' }}" placeholder="Enter your email" autocomplete="email" required>
+
+            <label class="field-label" for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" value="{{ form.phone.value|default_if_none:'' }}" placeholder="Enter your phone number" autocomplete="tel" required>
+
+            <label class="field-label" for="password">Password</label>
+            <input type="password" id="password" name="password1" placeholder="Create a password" autocomplete="new-password" required>
+
+            <label class="field-label" for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="password2" placeholder="Confirm your password" autocomplete="new-password" required>
+
+            <p class="error" id="error" role="alert">{% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}{% for field in form %}{% for error in field.errors %}{{ error }}<br>{% endfor %}{% endfor %}</p>
+
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+
+        <p class="alt">Already have an account? <a href="{% url 'sign_in' %}">Log In</a></p>
+    </main>
+{% endblock %}
