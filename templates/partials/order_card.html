@@ -1,0 +1,29 @@
+<article class="order-card" data-status="{{ order.order_status }}">
+    <div class="order-card-head">
+        <div>
+            <div class="order-card-id">Order #{{ order.id }}</div>
+            <div class="order-card-time">
+                {{ order.created_at|date:"M d, Y" }} · {{ order.created_at|time:"H:i" }}
+            </div>
+        </div>
+        <span class="badge badge-{{ order.order_status }}">{{ order.get_order_status_display }}</span>
+    </div>
+
+    <ul class="order-lines">
+        {% for line in order.orders.all %}
+            <li>
+                <span>{{ line.item.name }} × {{ line.quantity }}</span>
+                <span>{{ line.subtotal }} ETB</span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="order-card-foot">
+        {% if show_finished %}
+            <span class="order-card-time">Finished {{ order.updated_at|date:"M d, Y" }} · {{ order.updated_at|time:"H:i" }}</span>
+        {% else %}
+            <span>Total</span>
+        {% endif %}
+        <strong>{{ order.total }} ETB</strong>
+    </div>
+</article>
