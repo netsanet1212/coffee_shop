@@ -1,0 +1,29 @@
+{% load static %}
+    <header>
+        <a class="brand" href="{% url 'item_list' %}">
+            <img src="{% static 'img/aka.png' %}" alt="Aka Coffee logo">
+            <span>Aka Coffee</span>
+        </a>
+        <nav>
+            <a href="{% url 'item_list' %}">Home</a>
+            <a href="{% url 'order_history' %}">History</a>
+            <a href="{% url 'track_order' %}">Track Order</a>
+            
+
+            {% if user.is_staff %}
+            <details class="dropdown">
+                <summary>Admin</summary>
+                <div class="dropdown-menu">
+                    <a href="{% url 'stock_management' %}">Stock Management</a>
+                    <a href="{% url 'order_status_management' %}">Order Status Management</a>
+                    <a href="{% url 'audit_report' %}">Audit Report</a>
+                </div>
+            </details>
+            {% endif %}
+ 
+            <form method="post" action="{% url 'sign_out' %}">
+                {% csrf_token %}
+                <button type="submit">Log Out</button>
+            </form>
+        </nav>
+    </header>
