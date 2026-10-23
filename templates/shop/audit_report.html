@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Audit Report – Aka Coffee{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/header.html" %}
+
+<main class="orders">
+    <h1 class="orders-title">Audit Report</h1>
+    <p class="orders-sub">Orders, customers and income for the selected period.</p>
+
+    <div id="auditWrap" data-endpoint="{% url 'audit_stats' %}">
+        <div class="filter-bar" role="group" aria-label="Report period">
+            <button type="button" class="filter-btn active" data-range="today">Today</button>
+            <button type="button" class="filter-btn" data-range="week">Week</button>
+            <button type="button" class="filter-btn" data-range="month">Month</button>
+            <button type="button" class="filter-btn" data-range="year">Annual</button>
+        </div>
+
+        <div class="stat-grid" aria-live="polite">
+            <div class="stat-card">
+                <div class="stat-label">Orders</div>
+                <div class="stat-value" id="statOrders">{{ stats.orders|default:0 }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Customers</div>
+                <div class="stat-value" id="statUsers">{{ stats.users|default:0 }}</div>
+            </div>
+            <div class="stat-card stat-wide">
+                <div class="stat-label">Money earned</div>
+                <div class="stat-value" id="statRevenue">{{ stats.revenue|floatformat:"2g" }} ETB</div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

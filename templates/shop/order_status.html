@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Order Status Management – Aka Coffee{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/header.html" %}
+
+<main class="orders">
+    <h1 class="orders-title">Order Status Management</h1>
+    <p class="orders-sub">Mark orders as finished once they are ready.</p>
+
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+    {% endfor %}
+
+    <div class="filter-bar" role="group" aria-label="Filter by status" id="statusFilter">
+        <button type="button" class="filter-btn active" data-filter="all">All</button>
+        <button type="button" class="filter-btn" data-filter="in_progress">In progress</button>
+        <button type="button" class="filter-btn" data-filter="finished">Finished</button>
+    </div>
+
+    {% for order in orders %}
+        <article class="order-card status-row" data-status="{{ order.order_status }}">
+            <div class="order-card-head">
+                <div>
+                    <div class="order-card-id">Order #{{ order.id }} · {{ order.user.first_name }} {{ order.user.last_name }}</div>
+                    <div class="order-card-time">
+                        {{ order.created_at|date:"M d, Y" }} · {{ order.created_at|time:"H:i" }}
+                    </div>
+                </div>
+                <span class="badge badge-{{ order.order_status }}">{{ order.get_order_status_display }}</span>
+            </div>
+
+            <ul class="order-lines">
+                {% for line in order.orders.all %}
+                    <li><span>{{ line.item.name }} × {{ line.quantity }}</span><span>{{ line.subtotal }} ETB</span></li>
+                {% endfor %}
+            </ul>
+
+            <div class="order-card-foot">
+                <strong>{{ order.total }} ETB</strong>
+                {% if order.order_status != "finished" %}
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <button type="submit" class="btn-lemon btn-small">Mark as finished</button>
+                    </form>
+                {% endif %}
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <h2>No orders yet</h2>
+            <p>New orders will show up here.</p>
+        </div>
+    {% endfor %}
+</main>
+{% endblock %}

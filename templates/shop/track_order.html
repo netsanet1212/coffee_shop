@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Track Order – Aka Coffee{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/header.html" %}
+
+<main class="orders">
+    <h1 class="orders-title">Track Order</h1>
+    <p class="orders-sub">Your orders that are still in progress.</p>
+
+    {% for order in orders %}
+        {% include "partials/order_card.html" %}
+    {% empty %}
+        <div class="empty-state">
+            <h2>No orders in progress</h2>
+            <p>Orders you place will show up here until they are ready.</p>
+        </div>
+    {% endfor %}
+</main>
+{% endblock %}
