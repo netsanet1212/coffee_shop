@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Order History – Aka Coffee{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/header.html" %}
+
+<main class="orders">
+    <h1 class="orders-title">Order History</h1>
+    <p class="orders-sub">Your finished orders.</p>
+
+    {% for order in orders %}
+        {% include "partials/order_card.html" with show_finished=True %}
+    {% empty %}
+        <div class="empty-state">
+            <h2>No finished orders yet</h2>
+            <p>Completed orders will appear here.</p>
+        </div>
+    {% endfor %}
+</main>
+{% endblock %}

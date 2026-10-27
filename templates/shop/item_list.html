@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static l10n %}
+
+{% block title %}Menu – Aka Coffee{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block body %}
+{% include "partials/header.html" %}
+
+<main class="orders">
+    <h1 class="orders-title">Menu</h1>
+    <p class="orders-sub">Choose how many of each item you want, then   your order.</p>
+
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+    {% endfor %}
+
+    <div class="search-wrap">
+        <input type="search" id="itemSearch" class="search-input"
+               placeholder="Search the menu…" aria-label="Search the menu" autocomplete="off">
+    </div>
+
+    <form method="post" action="" class="order-form" id="orderForm">
+        {% csrf_token %}
+
+        <div id="itemRows">
+        {% for item in items %}
+            <div class="order-row" data-name="{{ item.name|lower }}" data-label="{{ item.name }}" data-price="{{ item.unit_price|unlocalize }}">
+                <div class="item-cell">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="" class="item-thumb">
+                    {% endif %}
+                    <div>
+                        <div class="order-row-name">{{ item.name }}</div>
+                        <div class="order-row-price">
+                            {{ item.unit_price }} ETB
+                            {% if item.stock_amount == 0 %}· Sold out{% endif %}
+                        </div>
+                    </div>
+                </div>
+                <input type="number" class="qty-input" name="qty_{{ item.id }}" value="0" min="0"
+                       max="{{ item.stock_amount }}" aria-label="Quantity of {{ item.name }}"
+                       {% if item.stock_amount == 0 %}disabled{% endif %}>
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <h2>No items yet</h2>
+                <p>Please check back soon.</p>
+            </div>
+        {% endfor %}
+        </div>
+
+        <div class="empty-state" id="noMatch" hidden>
+            <h2>No matches</h2>
+            <p>Try a different search.</p>
+        </div>
+
+        {% if items %}
+            <p class="form-error" id="orderError" role="alert"></p>
+            <button type="button" class="btn-lemon" id="reviewBtn">Review order</button>
+        {% endif %}
+
+        <!-- Order preview pop-up -->
+        <dialog id="previewDialog" class="preview" aria-labelledby="previewTitle">
+            <h2 id="previewTitle">Your order</h2>
+            <ul class="order-lines" id="previewList"></ul>
+            <div class="order-card-foot">
+                <span>Total</span>
+                <strong id="previewTotal">0 ETB</strong>
+            </div>
+            <div class="preview-actions">
+                <button type="button" class="btn-ghost" id="previewBack">Back</button>
+                <button type="submit" class="btn-lemon" id="checkoutBtn">Checkout with Chapa</button>
+            </div>
+        </dialog>
+    </form>
+</main>
+
+{% endblock %}
